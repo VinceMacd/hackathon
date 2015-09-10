@@ -97,15 +97,16 @@ class UserController extends FOSRestController
         if (!$this->canLogin($username, $password)) {
             throw $this->createNotFoundException('User not found');
         } else {
-            $token = $this->generateToken($username, $password);
-
             $em = $this->getDoctrine()->getManager();
-            $user = $em->getRepository('AppBundle:User')->findByToken($token);
+
+            $ip = $this->container->get('request')->getClientIp();
+            $token = $this->generateToken($username, $password, $ip);
+            $user = $em->getRepository('AppBundle:User')->findOneByToken($token);
 
             if (!$user) {
                 $user = new User();
                 $user->setToken($token['token'])
-                     ->setIp($this->container->get('request')->getClientIp())
+                     ->setIp($ip)
                      ->setExpiryDate($this->getExpiryDate())
                 ;
 
@@ -119,6 +120,13 @@ class UserController extends FOSRestController
         return $view;
     }
 
+    /**
+     * Checks whether a user can login
+     *
+     * @param  string $username
+     * @param  string $password
+     * @return boolean
+     */
     private function canLogin($username, $password)
     {
         $serviceUrl = "http://prod-load-balancer-8090-754838643.ap-southeast-1.elb.amazonaws.com/customer-service/"
@@ -141,9 +149,17 @@ class UserController extends FOSRestController
         return true;
     }
 
-    private function generateToken($username, $password)
+    /**
+     * Generate auth token
+     *
+     * @param  string $username
+     * @param  string $password
+     * @param  string $ip
+     * @return string
+     */
+    private function generateToken($username, $password, $ip)
     {
-        return array('token' => md5($username . $password));
+        return array('token' => md5($username . $password . $ip));
     }
 
     private function getExpiryDate()
