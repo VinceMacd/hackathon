@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "384d279dc7584899d3c79fbc526fd74c",
+    "hash": "522cd0c4663384c865f3ebf272b400f3",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -758,57 +758,61 @@
         },
         {
             "name": "friendsofsymfony/rest-bundle",
-            "version": "dev-master",
+            "version": "1.7.1",
+            "target-dir": "FOS/RestBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfSymfony/FOSRestBundle.git",
-                "reference": "6fda006888dadcb85b6229cc7baf0502ab0a131a"
+                "reference": "3fb2d30c58cde59213dbddd031bc36171b8b68b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSRestBundle/zipball/6fda006888dadcb85b6229cc7baf0502ab0a131a",
-                "reference": "6fda006888dadcb85b6229cc7baf0502ab0a131a",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSRestBundle/zipball/3fb2d30c58cde59213dbddd031bc36171b8b68b6",
+                "reference": "3fb2d30c58cde59213dbddd031bc36171b8b68b6",
                 "shasum": ""
             },
             "require": {
-                "doctrine/inflector": "^1.0",
-                "php": ">=5.4.0",
-                "psr/log": "^1.0",
-                "symfony/framework-bundle": "^2.7",
-                "symfony/routing": "^2.7",
-                "willdurand/jsonp-callback-validator": "^1.0",
-                "willdurand/negotiation": "^1.2"
+                "doctrine/inflector": "~1.0",
+                "php": ">=5.3.9",
+                "psr/log": "~1.0",
+                "symfony/framework-bundle": "~2.3",
+                "symfony/http-kernel": "~2.3,>=2.3.24",
+                "willdurand/jsonp-callback-validator": "~1.0",
+                "willdurand/negotiation": "~1.2"
+            },
+            "conflict": {
+                "jms/serializer": "<0.12",
+                "jms/serializer-bundle": "<0.11",
+                "symfony/validator": ">=2.5.0,<2.5.5"
             },
             "require-dev": {
-                "jms/serializer-bundle": "^1.0",
-                "phpoption/phpoption": "^1.1",
-                "sensio/framework-extra-bundle": "^3.0",
-                "symfony/browser-kit": "^2.7",
-                "symfony/css-selector": "^2.7",
-                "symfony/dependency-injection": "^2.7",
-                "symfony/expression-language": "~2.7",
-                "symfony/form": "^2.7",
-                "symfony/security": "^2.7",
-                "symfony/serializer": "^2.7",
-                "symfony/validator": "^2.7",
-                "symfony/yaml": "^2.7"
+                "jms/serializer": "~0.13",
+                "jms/serializer-bundle": "~0.12",
+                "phpoption/phpoption": "~1.1.0",
+                "sensio/framework-extra-bundle": "~3.0",
+                "symfony/browser-kit": "~2.3",
+                "symfony/dependency-injection": "~2.3",
+                "symfony/form": "~2.3",
+                "symfony/security": "~2.3",
+                "symfony/serializer": "~2.3",
+                "symfony/validator": "~2.3",
+                "symfony/yaml": "~2.3"
             },
             "suggest": {
-                "jms/serializer-bundle": "Add support for advanced serialization capabilities, recommended, requires ^1.0",
-                "sensio/framework-extra-bundle": "Add support for route annotations and the view response listener, requires ^3.0",
-                "symfony/expression-language": "Add support for using the expression language in the routing, requires ^2.7",
-                "symfony/serializer": "Add support for basic serialization capabilities and xml decoding, requires ^2.7",
-                "symfony/validator": "Add support for validation capabilities in the ParamFetcher, requires ^2.7"
+                "jms/serializer-bundle": "Add support for advanced serialization capabilities, recommended, requires ~0.12",
+                "sensio/framework-extra-bundle": "Add support for route annotations and the view response listener, requires ~3.0",
+                "symfony/serializer": "Add support for basic serialization capabilities and xml decoding, requires ~2.3",
+                "symfony/validator": "Add support for validation capabilities in the ParamFetcher, requires ~2.3"
             },
             "type": "symfony-bundle",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.0-dev"
+                    "dev-master": "1.7-dev"
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "FOS\\RestBundle\\": ""
+                "psr-0": {
+                    "FOS\\RestBundle": ""
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -834,7 +838,7 @@
             "keywords": [
                 "rest"
             ],
-            "time": "2015-08-30 21:10:11"
+            "time": "2015-06-16 08:39:26"
         },
         {
             "name": "incenteev/composer-parameter-handler",
@@ -2178,9 +2182,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "friendsofsymfony/rest-bundle": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
