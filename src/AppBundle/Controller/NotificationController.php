@@ -70,7 +70,7 @@ class NotificationController extends FOSRestController
         }
 
         $n = $this->saveNotification($token, $title, $actionCaption, $content, $actionUrl);
-        $this->sendNotification($user->getIp(), $n, $actionUrl);
+        $this->sendNotification($n, $actionUrl);
 
         $view = $this->view(true, 200)->setFormat('json');
 
@@ -118,19 +118,18 @@ class NotificationController extends FOSRestController
     /**
      * Sends a notification through socket.io
      *
-     * @param  string       $ip
      * @param  Notification $notification
      * @param  string       $actionUrl
      * @return void
      */
-    private function sendNotification($ip, $notification, $actionUrl = null)
+    private function sendNotification($notification, $actionUrl = null)
     {
         $data = array(
-            'ip'            => $ip,
+            'id'            => $notification->getId(),
             'title'         => $notification->getTitle(),
             'content'       => $notification->getContent(),
-            'actionUrl'     => $actionUrl,
-            'actionCaption' => $notification->getActionCaption()
+            'actionCaption' => $notification->getActionCaption(),
+            'actionUrl'     => $actionUrl
         );
 
         $socketClient = $this->get('elephantio_client.ainotifier');
