@@ -3,10 +3,15 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints;
+use JMS\Serializer\Annotation\ExclusionPolicy;
+use JMS\Serializer\Annotation\Expose;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="user")
+ *
+ * @ExclusionPolicy("all")
  */
 class User
 {
@@ -14,21 +19,29 @@ class User
      * @ORM\Id()
      * @ORM\Column(type="integer", nullable=false)
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @Expose
      */
     protected $id;
 
     /**
      * @ORM\Column(type="string", length=32, nullable=false)
+     *
+     * @Expose
      */
     protected $token;
 
     /**
      * @ORM\Column(type="date", nullable=false)
+     *
+     * @Expose
      */
     protected $expiryDate;
 
     /**
      * @ORM\Column(type="string", length=16, nullable=false)
+     *
+     * @Expose
      */
     protected $ip;
 
