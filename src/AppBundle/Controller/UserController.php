@@ -7,7 +7,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-// use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 use FOS\RestBundle\Controller\FOSRestController;
@@ -28,7 +27,7 @@ use AppBundle\Entity\User;
 class UserController extends FOSRestController
 {
     /**
-     * Get single User,
+     * Get single user
      *
      * @ApiDoc(
      *   resource = true,
@@ -59,6 +58,47 @@ class UserController extends FOSRestController
         }
 
         $view = $this->view($userInfo, 200)->setFormat('json');
+
+        return $view;
+    }
+
+    /**
+     * Generate an auth token
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Generate an auth token and returns it for further use",
+     *   output = "AppBundle\Entity\User",
+     *   statusCodes = {
+     *     200 = "Returned when successful",
+     *     404 = "Returned when the user is not found"
+     *   }
+     * )
+     *
+     *
+     * @param Request $request
+     *
+     * @return string
+     *
+     * @throws AccessDeniedException when no user found
+     *
+     * @Route("/generateToken", name="generateToken")
+     * @Method("POST")
+     */
+    public function generateTokenAction(Request $request)
+    {
+        $universalID = $request->request->get('universalID');
+        if (!$universalID) {
+            throw $this->createNotFoundException('Required universalID missing');
+        }
+
+        $credentials = $this->getCustomerCredentials($universalID);
+        if (!$credentials) {
+            throw $this->createNotFoundException('Customer not found');
+        }
+
+        $token = $this->generateToken($credentials['login'], $credentials['password']);
+        $view = $this->view($token, 200)->setFormat('json');
 
         return $view;
     }
@@ -99,14 +139,13 @@ class UserController extends FOSRestController
         } else {
             $em = $this->getDoctrine()->getManager();
 
-            $ip = $this->container->get('request')->getClientIp();
-            $token = $this->generateToken($username, $password, $ip);
+            $token = $this->generateToken($username, $password);
             $user = $em->getRepository('AppBundle:User')->findOneByToken($token);
 
             if (!$user) {
                 $user = new User();
                 $user->setToken($token['token'])
-                     ->setIp($ip)
+                     ->setIp($this->container->get('request')->getClientIp())
                      ->setExpiryDate($this->getExpiryDate())
                 ;
 
@@ -149,17 +188,40 @@ class UserController extends FOSRestController
         return true;
     }
 
+    private function getCustomerCredentials($universalID)
+    {
+        $serviceUrl = "http://prod-load-balancer-8090-754838643.ap-southeast-1.elb.amazonaws.com/customer-service/"
+                    . "customer-legacy/" . $universalID . "/is-client-factory/false"
+        ;
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $serviceUrl);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        if (!$this->isJSONValid($response)) {
+            return false;
+        }
+        $customer = json_decode($response);
+
+        $credentials = array(
+            'login'    => $customer->clientInformation->login,
+            'password' => md5($customer->clientInformation->password)
+        );
+        return $credentials;
+    }
+
     /**
      * Generate auth token
      *
      * @param  string $username
      * @param  string $password
-     * @param  string $ip
      * @return string
      */
-    private function generateToken($username, $password, $ip)
+    private function generateToken($username, $password)
     {
-        return array('token' => md5($username . $password . $ip));
+        return array('token' => md5($username . $password));
     }
 
     private function getExpiryDate()
