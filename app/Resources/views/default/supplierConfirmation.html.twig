@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Supplier Confirmation
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+
+    <style>
+        label { width: 200px; }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="jumbotron">
+        <div style="width: 1000px; margin: auto">
+
+            <h1>Supplier Confirmation</h1>
+            <p>Please provide factory information details and confirm the booking.</p>
+            <br><br><br>
+
+            <label for="name">Factory Name</label>
+            <input id="name" type="text">
+            <br>
+
+            <label for="name">Factory Manager</label>
+            <input id="name" type="text">
+            <br>
+
+            <strong>...</strong>
+            <br>
+            <br>
+            <br>
+
+            <div style="text-align: center">
+                <button type="button" class="btn btn-lg btn-success" onclick="javascript: push();">
+                    I acknowledge that factory information is correct and confirm the booking
+                </button>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/jquery-1.11.3.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+
+    <script>
+        function push()
+        {
+            var $btn = $('button');
+
+            $.ajax({
+                url: '/app_dev.php/notification/create',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    'token': 'B9FB52A9ADC16FB8AFCBEC77FA038BD8',
+                    'title': 'Booking confirmation',
+                    'content': 'Your booking for a PSI (R-US3-529234) has been confirmed by your supplier',
+                    'actionUrl': '',
+                    'actionCaption': ''
+                },
+                beforeSend: function() {
+                    $btn.text('Confirming...');
+                    $btn.prop('disabled', true);
+                },
+                success: function() {
+                    $btn.text('I acknowledge that factory information is correct and confirm the booking');
+                    $btn.prop('disabled', false);
+
+                    alert('Confirmed!')
+                },
+                error: function() {
+                    alert('error');
+                }
+            });
+        }
+    </script>
+{% endblock %}

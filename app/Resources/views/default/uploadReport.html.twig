@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Upload report
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="jumbotron">
+        <div style="width: 1000px; margin: auto">
+
+            <h1>Inspector portal</h1>
+            <p>Please upload the inspection report for order <strong>R-US3-456385</strong>.</p>
+            <br><br><br>
+
+            <div style="text-align: center">
+                <input type="file">
+                <br>
+
+                <button type="button" class="btn btn-lg btn-success" onclick="javascript: push();">Upload report</button>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/jquery-1.11.3.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+
+    <script>
+        function push()
+        {
+            var $btn = $('button');
+
+            $.ajax({
+                url: '/app_dev.php/notification/create',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    'token': 'B9FB52A9ADC16FB8AFCBEC77FA038BD8',
+                    'title': 'New report published',
+                    'content': 'Your report for order <strong>R-US3-456385</strong> is ready',
+                    'actionUrl': 'http://www.asiainspection.com',
+                    'actionCaption': 'Download it now'
+                },
+                beforeSend: function() {
+                    $btn.text('Uploading...');
+                    $btn.prop('disabled', true);
+                },
+                success: function() {
+                    $btn.text('Upload report');
+                    $btn.prop('disabled', false);
+
+                    alert('Uploaded!')
+                },
+                error: function() {
+                    alert('error');
+                }
+            });
+        }
+    </script>
+{% endblock %}

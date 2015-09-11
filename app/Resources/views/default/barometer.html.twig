@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    AI Barometer
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="jumbotron">
+        <div style="width: 1000px; margin: auto">
+
+            <h1>AI Barometer</h1>
+            <br><br><br>
+
+            <div style="text-align: center">
+                <button type="button" class="btn btn-lg btn-success" onclick="javascript: push();">
+                    Publish the barometer on Marketing website
+                </button>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/jquery-1.11.3.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+
+    <script>
+        function push()
+        {
+            var $btn = $('button');
+
+            $.ajax({
+                url: '/app_dev.php/notification/create',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    'token': 'B9FB52A9ADC16FB8AFCBEC77FA038BD8',
+                    'title': 'AsiaInspection Q3 Barometer Released',
+                    'content': 'Southeast Asia Sees Staggering Growth, Food Violations Continue',
+                    'actionUrl': 'http://www.asiainspection.com/asia-inspection-news/2015-q3-southeast-asia-growth-staggering',
+                    'actionCaption': 'See more'
+                },
+                beforeSend: function() {
+                    $btn.text('Publishing...');
+                    $btn.prop('disabled', true);
+                },
+                success: function() {
+                    $btn.text('Publish the barometer on Marketing website');
+                    $btn.prop('disabled', false);
+
+                    alert('Published!')
+                },
+                error: function() {
+                    alert('error');
+                }
+            });
+        }
+    </script>
+{% endblock %}
