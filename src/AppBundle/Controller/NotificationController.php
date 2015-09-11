@@ -33,7 +33,7 @@ class NotificationController extends FOSRestController
      * @ApiDoc(
      *   resource = true,
      *   description = "Create a notification and pushes it to the server",
-     *   output = "string",
+     *   output = "boolean",
      *   statusCodes = {
      *     200 = "Returned when successful",
      *     500 = "Returned when something went wrong"
@@ -125,7 +125,7 @@ class NotificationController extends FOSRestController
     private function sendNotification($notification, $actionUrl = null)
     {
         $data = array(
-            'id'            => $notification->getId(),
+            'id'            => (string)$notification->getId(),
             'title'         => $notification->getTitle(),
             'content'       => $notification->getContent(),
             'actionCaption' => $notification->getActionCaption(),
